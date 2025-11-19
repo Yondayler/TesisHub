@@ -1,0 +1,38 @@
+# Dependencias
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build
+dist/
+*.js.map
+
+# Base de datos
+database/*.db
+database/*.db-journal
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+
