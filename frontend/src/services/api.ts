@@ -1,7 +1,38 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { ApiResponse } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Detectar automáticamente la URL del backend en producción
+const getApiUrl = (): string => {
+  // Si está definida en variables de entorno, usarla
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // En producción, detectar automáticamente basándose en el dominio
+  if (import.meta.env.PROD) {
+    // Si estamos en Render, el backend estará en el mismo dominio base
+    // Ejemplo: si frontend es tesis-hub-frontend.onrender.com
+    // entonces backend es tesis-hub-backend.onrender.com
+    const hostname = window.location.hostname;
+    
+    // Si es un dominio de Render
+    if (hostname.includes('onrender.com')) {
+      // Extraer el nombre del servicio del frontend
+      const frontendName = hostname.split('.')[0];
+      // Construir el nombre del backend (asumiendo naming convention)
+      const backendName = frontendName.replace('-frontend', '-backend');
+      return `https://${backendName}.onrender.com/api`;
+    }
+    
+    // Fallback: usar el mismo dominio con puerto 3000
+    return `${window.location.protocol}//${window.location.hostname}:3000/api`;
+  }
+  
+  // Desarrollo local
+  return 'http://localhost:3000/api';
+};
+
+const API_URL = getApiUrl();
 
 // Crear instancia de axios
 const api: AxiosInstance = axios.create({
