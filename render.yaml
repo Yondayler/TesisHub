@@ -23,7 +23,6 @@ services:
           type: web
           name: tesis-hub-frontend
           property: host
-        value: https://
 
   # Frontend
   - type: web
