@@ -1,0 +1,40 @@
+services:
+  # Backend API
+  - type: web
+    name: tesis-hub-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: DB_PATH
+        value: ./backend/database/database.db
+      - key: CORS_ORIGIN
+        fromService:
+          type: web
+          name: tesis-hub-frontend
+          property: url
+
+  # Frontend
+  - type: web
+    name: tesis-hub-frontend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npx vite preview --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+      - key: PORT
+        value: 10000
+
