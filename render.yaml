@@ -22,7 +22,8 @@ services:
         fromService:
           type: web
           name: tesis-hub-frontend
-          property: url
+          property: host
+        value: https://
 
   # Frontend
   - type: web
