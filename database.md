@@ -10,7 +10,7 @@ Este documento describe el esquema completo de la base de datos SQLite para el s
 
 ### 1. usuarios
 
-Almacena la información de los usuarios del sistema (estudiantes, profesores, administradores).
+Almacena la información de los usuarios del sistema (estudiantes, tutores, administradores).
 
 ```sql
 CREATE TABLE usuarios (
@@ -21,7 +21,7 @@ CREATE TABLE usuarios (
   apellido TEXT NOT NULL,
   cedula TEXT UNIQUE,
   telefono TEXT,
-  rol TEXT NOT NULL DEFAULT 'estudiante', -- estudiante, profesor, administrador
+  rol TEXT NOT NULL DEFAULT 'estudiante', -- estudiante, tutor, administrador
   activo INTEGER NOT NULL DEFAULT 1, -- 1 = activo, 0 = inactivo
   fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
   ultimo_acceso DATETIME
@@ -45,6 +45,10 @@ CREATE TABLE proyectos (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   titulo TEXT NOT NULL,
   descripcion TEXT NOT NULL,
+  planteamiento TEXT, -- Planteamiento del problema
+  solucion_problema TEXT, -- Solución propuesta al problema
+  diagnosticos TEXT, -- Diagnósticos del proyecto
+  antecedentes TEXT, -- Antecedentes del proyecto
   objetivo_general TEXT,
   objetivos_especificos TEXT,
   justificacion TEXT,
@@ -53,7 +57,7 @@ CREATE TABLE proyectos (
   presupuesto_estimado REAL,
   duracion_meses INTEGER,
   estudiante_id INTEGER NOT NULL,
-  tutor_id INTEGER, -- Profesor asignado como tutor
+  tutor_id INTEGER, -- Tutor asignado al proyecto
   estado TEXT NOT NULL DEFAULT 'borrador', -- borrador, enviado, en_revision, aprobado, rechazado, corregir
   fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
   fecha_envio DATETIME, -- Fecha en que se envió para revisión
@@ -78,7 +82,7 @@ CREATE INDEX idx_proyectos_fecha_envio ON proyectos(fecha_envio);
 
 ### 3. revisiones
 
-Almacena las revisiones realizadas por los profesores/administradores sobre cada proyecto.
+Almacena las revisiones realizadas por los tutores/administradores sobre cada proyecto.
 
 ```sql
 CREATE TABLE revisiones (
@@ -107,7 +111,7 @@ CREATE INDEX idx_revisiones_fecha ON revisiones(fecha_revision);
 
 ### 4. archivos_proyecto
 
-Almacena los archivos/documentos asociados a cada proyecto.
+Almacena los archivos/documentos asociados a cada proyecto. Los archivos pueden estar categorizados para facilitar su organización (diagnóstico, antecedentes, objetivos, otros).
 
 ```sql
 CREATE TABLE archivos_proyecto (
@@ -121,6 +125,7 @@ CREATE TABLE archivos_proyecto (
   descripcion TEXT,
   fecha_subida DATETIME DEFAULT CURRENT_TIMESTAMP,
   version INTEGER NOT NULL DEFAULT 1,
+  categoria TEXT, -- diagnostico, antecedentes, objetivos, otro
   FOREIGN KEY (proyecto_id) REFERENCES proyectos(id) ON DELETE CASCADE
 );
 ```
@@ -129,13 +134,14 @@ CREATE TABLE archivos_proyecto (
 ```sql
 CREATE INDEX idx_archivos_proyecto ON archivos_proyecto(proyecto_id);
 CREATE INDEX idx_archivos_tipo ON archivos_proyecto(tipo_archivo);
+CREATE INDEX idx_archivos_categoria ON archivos_proyecto(categoria);
 ```
 
 ---
 
 ### 5. comentarios
 
-Permite que usuarios comenten sobre proyectos (estudiantes, tutores, revisores).
+Permite que usuarios comenten sobre proyectos (estudiantes, tutores, revisores). Esta tabla se utiliza para el sistema de chat en tiempo real entre estudiantes y tutores.
 
 ```sql
 CREATE TABLE comentarios (
@@ -287,7 +293,7 @@ Los posibles valores para el campo `estado` en la tabla `proyectos`:
 Los posibles valores para el campo `rol` en la tabla `usuarios`:
 
 - **estudiante**: Puede crear y gestionar sus propios proyectos
-- **profesor**: Puede ser asignado como tutor y revisar proyectos
+- **tutor**: Puede ser asignado como tutor y revisar proyectos
 - **administrador**: Acceso completo al sistema, puede gestionar usuarios y proyectos
 
 ---
@@ -303,6 +309,10 @@ Los posibles valores para el campo `rol` en la tabla `usuarios`:
 4. **Versiones**: Los proyectos y archivos incluyen un campo `version` para control de versiones.
 
 5. **Soft Delete**: Considera agregar un campo `eliminado` (INTEGER) en lugar de borrar físicamente registros importantes para mantener auditoría.
+
+6. **Migraciones Automáticas**: El sistema incluye migraciones automáticas que agregan nuevos campos a las tablas existentes:
+   - `planteamiento`, `solucion_problema`, `diagnosticos`, `antecedentes` en la tabla `proyectos`
+   - `categoria` en la tabla `archivos_proyecto`
 
 ---
 

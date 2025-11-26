@@ -7,7 +7,7 @@ export interface Usuario {
   apellido: string;
   cedula?: string;
   telefono?: string;
-  rol: 'estudiante' | 'profesor' | 'administrador';
+  rol: 'estudiante' | 'tutor' | 'administrador';
   activo: number;
   fecha_registro?: string;
   ultimo_acceso?: string;
@@ -20,7 +20,7 @@ export interface UsuarioSinPassword {
   apellido: string;
   cedula?: string;
   telefono?: string;
-  rol: 'estudiante' | 'profesor' | 'administrador';
+  rol: 'estudiante' | 'tutor' | 'administrador';
   activo: number;
   fecha_registro?: string;
   ultimo_acceso?: string;
@@ -31,6 +31,10 @@ export interface Proyecto {
   id?: number;
   titulo: string;
   descripcion: string;
+  planteamiento?: string;
+  solucion_problema?: string;
+  diagnosticos?: string;
+  antecedentes?: string;
   objetivo_general?: string;
   objetivos_especificos?: string;
   justificacion?: string;
@@ -74,6 +78,7 @@ export interface ArchivoProyecto {
   descripcion?: string;
   fecha_subida?: string;
   version: number;
+  categoria?: 'diagnostico' | 'antecedentes' | 'objetivos' | 'otro';
 }
 
 // Tipos para Comentarios
@@ -87,6 +92,10 @@ export interface Comentario {
   fecha_comentario?: string;
   editado: number;
   fecha_edicion?: string;
+  usuario_nombre?: string;
+  usuario_apellido?: string;
+  usuario_rol?: string;
+  respuestas?: Comentario[];
 }
 
 // Tipos para Historial
@@ -122,6 +131,34 @@ export interface AsignacionTutor {
   fecha_asignacion?: string;
   activa: number;
   observaciones?: string;
+}
+
+// Tipos para Observaciones de Proyecto
+export interface ObservacionProyecto {
+  id?: number;
+  proyecto_id: number;
+  usuario_id: number;
+  observacion: string;
+  estado_proyecto: string;
+  fecha_creacion?: string;
+  usuario_nombre?: string;
+  usuario_apellido?: string;
+}
+
+// Tipos para Auditoría
+export interface Auditoria {
+  id?: number;
+  administrador_id: number;
+  accion: string;
+  entidad: string;
+  entidad_id?: number;
+  detalles?: string;
+  datos_anteriores?: string;
+  datos_nuevos?: string;
+  fecha_accion?: string;
+  administrador_nombre?: string;
+  administrador_apellido?: string;
+  administrador_email?: string;
 }
 
 // Tipos para JWT

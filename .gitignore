@@ -53,3 +53,6 @@ Thumbs.db
 .cursor/
 !.cursor/mcp.json
 
+# Archivos de análisis/documentación local
+ANALISIS_MASTRA.md
+

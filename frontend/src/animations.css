@@ -1,0 +1,624 @@
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}
+
+@import "tailwindcss";
+
+/* Animaciones globales y microinteracciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Clases de utilidad para animaciones */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Transiciones suaves globales */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Hover effects mejorados */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Animaciones compartidas para Login y Registro */
+@keyframes authFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes authSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes authSlideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes authScaleIn {
+  0% {
+    opacity: 0 !important;
+    transform: scale(0.96) !important;
+  }
+  1% {
+    opacity: 1 !important;
+  }
+  100% {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+  }
+}
+
+@keyframes authLogoFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Clases de utilidad para animaciones de autenticación */
+.animate-auth-fade-in {
+  animation: authFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-auth-slide-in-left {
+  animation: authSlideInLeft 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-auth-slide-in-right {
+  animation: authSlideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-auth-scale-in {
+  animation: authScaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin, center) !important;
+}
+
+.animate-auth-logo-float {
+  animation: authLogoFloat 3s ease-in-out infinite;
+}
+
+/* Delays escalonados para elementos */
+.animate-auth-delay-100 {
+  animation-delay: 0.1s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.animate-auth-delay-200 {
+  animation-delay: 0.2s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.animate-auth-delay-300 {
+  animation-delay: 0.3s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+/* Sidebar smooth animations - Enhanced for visible transitions */
+[data-slot="sidebar-container"] {
+  will-change: left, right, opacity, transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Ensure smooth content fade */
+[data-slot="sidebar-inner"] {
+  will-change: opacity;
+}
+
+
+/* Regla específica para el botón Anterior del Stepper */
+/* Cuando está en fase 1, el texto debe ser gris claro */
+.stepper-back-button.stepper-step-1 {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.stepper-back-button.stepper-step-1:hover,
+.stepper-back-button.stepper-step-1:focus,
+.stepper-back-button.stepper-step-1:active,
+.stepper-back-button.stepper-step-1:visited {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* Cuando pasa de la fase 1 (currentStep > 1), el texto debe ser blanco en modo oscuro */
+/* Modo claro: usa foreground normal */
+.stepper-back-button.stepper-back-enabled.stepper-step-greater-than-1 {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Modo oscuro: fuerza color blanco - selector específico para html.dark */
+html.dark .stepper-back-button.stepper-back-enabled.stepper-step-greater-than-1 {
+  color: #ffffff !important;
+}
+
+html.dark .stepper-back-button.stepper-back-enabled.stepper-step-greater-than-1:hover {
+  color: #ffffff !important;
+  opacity: 0.9;
+}
+
+html.dark .stepper-back-button.stepper-back-enabled.stepper-step-greater-than-1:focus {
+  color: #ffffff !important;
+}
+
+html.dark .stepper-back-button.stepper-back-enabled.stepper-step-greater-than-1:active {
+  color: #ffffff !important;
+}
+
+html.dark .stepper-back-button.stepper-back-enabled.stepper-step-greater-than-1:visited {
+  color: #ffffff !important;
+}
+
+/* Regla específica para el botón Anterior del ProyectoForm */
+/* Cuando está en fase 1, el texto debe ser gris claro */
+.proyecto-form-back-button.proyecto-form-step-1 {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.proyecto-form-back-button.proyecto-form-step-1:hover,
+.proyecto-form-back-button.proyecto-form-step-1:focus,
+.proyecto-form-back-button.proyecto-form-step-1:active {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* Cuando pasa de la fase 1 (currentStep > 1), el texto debe ser blanco en modo oscuro */
+/* Modo claro: usa foreground normal */
+.proyecto-form-back-button.proyecto-form-step-greater-than-1 {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Modo oscuro: fuerza color blanco - selector específico para html.dark */
+html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1 {
+  color: #ffffff !important;
+}
+
+html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:hover {
+  color: #ffffff !important;
+}
+
+html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:focus {
+  color: #ffffff !important;
+}
+
+html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
+  color: #ffffff !important;
+}
+
+/* Utilidades de line-clamp */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Animaciones personalizadas para dropdown */
+@keyframes dropdown-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes dropdown-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+}
+
+.animate-dropdown-in {
+  animation: dropdown-fade-in 0.2s ease-out;
+}
+
+.animate-dropdown-out {
+  animation: dropdown-fade-out 0.15s ease-in;
+}
+
+/* Animación de salida para dropdown (igual que login/registro pero inversa) */
+@keyframes authScaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1) !important;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96) !important;
+  }
+}
+
+.animate-auth-scale-out {
+  animation: authScaleOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin, center) !important;
+}
+
+/* Animaciones específicas para dropdowns - Solo opacity para no interferir con transform de Radix UI */
+@keyframes dropdownFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes dropdownFadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Asegurar que Radix UI pueda establecer top y left correctamente */
+[data-slot="dropdown-menu-content"] {
+  /* Forzar position fixed, Radix UI establecerá top y left con estilos inline */
+  position: fixed !important;
+}
+
+/* Forzar animaciones en dialog content específicamente - Mayor especificidad */
+/* Preservar el translate original del dialog para mantener el centrado */
+@keyframes dialogScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translate(-50%, -50%) !important;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate(-50%, -50%) !important;
+  }
+}
+
+@keyframes dialogScaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translate(-50%, -50%) !important;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96) translate(-50%, -50%) !important;
+  }
+}
+
+[data-slot="dialog-content"][data-state="open"] {
+  animation: dialogScaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  transform-origin: center !important;
+}
+
+[data-slot="dialog-content"][data-state="closed"] {
+  animation: dialogScaleOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  transform-origin: center !important;
+}
+
+/* Animaciones específicas para AlertDialog - Minimalista y elegante */
+@keyframes alertDialogFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 8px)) scale(0.98) !important;
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) !important;
+  }
+}
+
+@keyframes alertDialogFadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) !important;
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 4px)) scale(0.99) !important;
+  }
+}
+
+[data-slot="alert-dialog-content"][data-state="open"] {
+  animation: alertDialogFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  transform-origin: center !important;
+}
+
+[data-slot="alert-dialog-content"][data-state="closed"] {
+  animation: alertDialogFadeOut 0.15s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+  transform-origin: center !important;
+}
+
+/* Animación de "escribiendo..." con 3 puntitos */
+@keyframes typing-dots {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+/* Animación de entrada para el indicador de escribiendo */
+@keyframes typing-indicator-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Animación de salida para el indicador de escribiendo */
+@keyframes typing-indicator-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+}
+
+.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: hsl(var(--muted));
+  border-radius: 12px;
+  font-size: 14px;
+  color: hsl(var(--muted-foreground));
+}
+
+.typing-indicator span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  animation: typing-dots 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Contenedor del indicador con animación */
+.typing-indicator-container {
+  animation: typing-indicator-enter 0.3s ease-out;
+}
+
+.typing-indicator-container.exit {
+  animation: typing-indicator-exit 0.2s ease-in forwards;
+}
+
+/* Animación de entrada para mensajes nuevos (estilo WhatsApp) */
+@keyframes message-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Animación sutil de rebote para mensajes */
+@keyframes message-bounce {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.message-enter {
+  animation: message-bounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Para mensajes que ya existen, sin animación */
+.message-static {
+  animation: none;
+}
+

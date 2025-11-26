@@ -1,11 +1,17 @@
 import { query } from './database';
 import fs from 'fs';
 import path from 'path';
+import bcrypt from 'bcryptjs';
+import { UsuarioModel } from '../models/Usuario';
 
 export const initDatabase = async (): Promise<void> => {
   try {
     // Crear todas las tablas
     await crearTablas();
+    
+    // Crear administrador inicial si no existe
+    await crearAdministradorInicial();
+    
     console.log('✅ Base de datos inicializada correctamente');
   } catch (error) {
     console.error('❌ Error al inicializar la base de datos:', error);
@@ -158,6 +164,36 @@ const crearTablas = async (): Promise<void> => {
     )
   `);
 
+  // Tabla observaciones_proyecto - Para almacenar múltiples observaciones con fecha/hora
+  await query.run(`
+    CREATE TABLE IF NOT EXISTS observaciones_proyecto (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      proyecto_id INTEGER NOT NULL,
+      usuario_id INTEGER NOT NULL,
+      observacion TEXT NOT NULL,
+      estado_proyecto TEXT NOT NULL,
+      fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (proyecto_id) REFERENCES proyectos(id) ON DELETE CASCADE,
+      FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+    )
+  `);
+
+  // Tabla auditoria - Para registrar todas las acciones de administradores
+  await query.run(`
+    CREATE TABLE IF NOT EXISTS auditoria (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      administrador_id INTEGER NOT NULL,
+      accion TEXT NOT NULL,
+      entidad TEXT NOT NULL,
+      entidad_id INTEGER,
+      detalles TEXT,
+      datos_anteriores TEXT,
+      datos_nuevos TEXT,
+      fecha_accion DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (administrador_id) REFERENCES usuarios(id)
+    )
+  `);
+
   // Crear índices
   await crearIndices();
 };
@@ -200,6 +236,131 @@ const crearIndices = async (): Promise<void> => {
   // Índices para asignaciones
   await query.run(`CREATE INDEX IF NOT EXISTS idx_asignaciones_proyecto ON asignaciones_tutores(proyecto_id)`);
   await query.run(`CREATE INDEX IF NOT EXISTS idx_asignaciones_tutor ON asignaciones_tutores(tutor_id)`);
+
+  // Índices para observaciones
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_observaciones_proyecto ON observaciones_proyecto(proyecto_id)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_observaciones_usuario ON observaciones_proyecto(usuario_id)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_observaciones_fecha ON observaciones_proyecto(fecha_creacion)`);
+
+  // Índices para auditoría
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_auditoria_administrador ON auditoria(administrador_id)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_auditoria_entidad ON auditoria(entidad, entidad_id)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_auditoria_fecha ON auditoria(fecha_accion)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_auditoria_accion ON auditoria(accion)`);
+
+  // Migración: Agregar nuevos campos a proyectos si no existen
+  try {
+    const tableInfo = await query.all('PRAGMA table_info(proyectos)') as Array<{ name: string }>;
+    const columnNames = tableInfo.map(col => col.name);
+
+    if (!columnNames.includes('planteamiento')) {
+      await query.run('ALTER TABLE proyectos ADD COLUMN planteamiento TEXT');
+      console.log('✓ Columna "planteamiento" agregada');
+    }
+
+    if (!columnNames.includes('solucion_problema')) {
+      await query.run('ALTER TABLE proyectos ADD COLUMN solucion_problema TEXT');
+      console.log('✓ Columna "solucion_problema" agregada');
+    }
+
+    if (!columnNames.includes('diagnosticos')) {
+      await query.run('ALTER TABLE proyectos ADD COLUMN diagnosticos TEXT');
+      console.log('✓ Columna "diagnosticos" agregada');
+    }
+
+    if (!columnNames.includes('antecedentes')) {
+      await query.run('ALTER TABLE proyectos ADD COLUMN antecedentes TEXT');
+      console.log('✓ Columna "antecedentes" agregada');
+    }
+  } catch (error) {
+    console.error('Error en migración de campos de proyecto:', error);
+  }
+
+  // Migración: Agregar campo categoria a archivos_proyecto si no existe
+  try {
+    const archivosTableInfo = await query.all('PRAGMA table_info(archivos_proyecto)') as Array<{ name: string }>;
+    const archivosColumnNames = archivosTableInfo.map(col => col.name);
+
+    if (!archivosColumnNames.includes('categoria')) {
+      await query.run('ALTER TABLE archivos_proyecto ADD COLUMN categoria TEXT');
+      console.log('✓ Columna "categoria" agregada a archivos_proyecto');
+    }
+  } catch (error) {
+    console.error('Error en migración de campos de archivos:', error);
+  }
 };
+
+// Crear administrador inicial si no existe
+const crearAdministradorInicial = async (): Promise<void> => {
+  try {
+    const ADMIN_EMAIL = 'admin@tesishub.com';
+    const ADMIN_PASSWORD = 'Admin123!';
+    const ADMIN_NOMBRE = 'Administrador';
+    const ADMIN_APELLIDO = 'Sistema';
+
+    // Verificar si ya existe un administrador con este email
+    const adminExistente = await UsuarioModel.obtenerPorEmail(ADMIN_EMAIL);
+    
+    if (adminExistente) {
+      if (adminExistente.rol === 'administrador') {
+        console.log('✅ Administrador inicial ya existe (email: ' + ADMIN_EMAIL + ')');
+        return;
+      } else {
+        console.log('⚠️  El email ' + ADMIN_EMAIL + ' existe pero no es administrador. Rol actual: ' + adminExistente.rol);
+        // No crear si el email ya existe con otro rol
+        return;
+      }
+    }
+
+    // Verificar si existe algún administrador en el sistema
+    const todosUsuarios = await UsuarioModel.listar();
+    const administradores = todosUsuarios.filter(u => u.rol === 'administrador');
+    
+    if (administradores.length > 0) {
+      console.log(`✅ Ya existen ${administradores.length} administrador(es) en el sistema`);
+      return;
+    }
+
+    // No hay administradores, crear el inicial
+    console.log('📝 Creando administrador inicial...');
+    const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
+    
+    const result = await query.run(
+      `INSERT INTO usuarios (email, password, nombre, apellido, rol, activo)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        ADMIN_EMAIL,
+        hashedPassword,
+        ADMIN_NOMBRE,
+        ADMIN_APELLIDO,
+        'administrador',
+        1
+      ]
+    );
+
+    if (result.lastID) {
+      console.log('✅ Administrador inicial creado exitosamente');
+      console.log(`   ID: ${result.lastID}`);
+      console.log(`   Email: ${ADMIN_EMAIL}`);
+      console.log(`   Contraseña: ${ADMIN_PASSWORD}`);
+    } else {
+      console.log('⚠️  No se pudo obtener el ID del administrador creado');
+    }
+  } catch (error: any) {
+    // Si el error es por email duplicado, significa que ya existe (race condition)
+    if (error.message?.includes('UNIQUE constraint') || 
+        error.message?.includes('email') || 
+        error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+      console.log('✅ Administrador inicial ya existe (verificado por constraint de base de datos)');
+      return;
+    }
+    console.error('⚠️  Error al crear administrador inicial:', error.message);
+    console.error('   Stack:', error.stack);
+    // No lanzar error para no bloquear la inicialización
+  }
+};
+
+
+
 
 

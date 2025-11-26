@@ -2,6 +2,10 @@
 
 Sistema completo para la gestión y aceptación de proyectos desarrollado con Node.js, Express, React, TypeScript y SQLite.
 
+ADMIN: 
+Email: admin@tesishub.com
+Contraseña: Admin123!
+
 ## 🚀 Tecnologías
 
 ### Backend
@@ -9,7 +13,7 @@ Sistema completo para la gestión y aceptación de proyectos desarrollado con No
 - TypeScript
 - SQLite
 - JWT para autenticación
-- bcryptjs para hash de contraseñas
+- bcryptjs para hash de contraseñas 
 
 ### Frontend
 - React 18
@@ -143,5 +147,13 @@ El frontend estará en `http://localhost:5173`
 ## 📄 Licencia
 
 ISC
+
+
+
+
+
+
+
+
 
 

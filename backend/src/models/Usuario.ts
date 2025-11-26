@@ -85,6 +85,16 @@ export class UsuarioModel {
       campos.push('apellido = ?');
       valores.push(datos.apellido);
     }
+    if (datos.email) {
+      campos.push('email = ?');
+      valores.push(datos.email);
+    }
+    if (datos.password) {
+      // Si se actualiza la contraseña, hay que hashearla
+      const hashedPassword = await bcrypt.hash(datos.password, 10);
+      campos.push('password = ?');
+      valores.push(hashedPassword);
+    }
     if (datos.telefono) {
       campos.push('telefono = ?');
       valores.push(datos.telefono);
@@ -104,6 +114,64 @@ export class UsuarioModel {
     await query.run(
       `UPDATE usuarios SET ${campos.join(', ')} WHERE id = ?`,
       valores
+    );
+  }
+
+  // Contar usuarios por rol
+  static async contarPorRol(rol: string): Promise<number> {
+    const result = await query.get(
+      `SELECT COUNT(*) as total FROM usuarios WHERE rol = ? AND activo = 1`,
+      [rol]
+    ) as { total: number } | undefined;
+    
+    return result?.total || 0;
+  }
+
+  // Contar nuevos estudiantes del mes actual
+  static async contarNuevosEstudiantes(): Promise<number> {
+    const result = await query.get(
+      `SELECT COUNT(*) as total 
+       FROM usuarios 
+       WHERE rol = 'estudiante' 
+       AND activo = 1 
+       AND strftime('%Y-%m', fecha_registro) = strftime('%Y-%m', 'now')`,
+      []
+    ) as { total: number } | undefined;
+    
+    return result?.total || 0;
+  }
+
+  // Contar nuevos estudiantes del mes anterior
+  static async contarNuevosEstudiantesMesAnterior(): Promise<number> {
+    const result = await query.get(
+      `SELECT COUNT(*) as total 
+       FROM usuarios 
+       WHERE rol = 'estudiante' 
+       AND activo = 1 
+       AND strftime('%Y-%m', fecha_registro) = strftime('%Y-%m', date('now', '-1 month'))`,
+      []
+    ) as { total: number } | undefined;
+    
+    return result?.total || 0;
+  }
+
+  // Eliminar usuario (solo tutores o administradores)
+  static async eliminar(id: number, rolPermitido?: 'tutor' | 'administrador'): Promise<void> {
+    // Verificar que el usuario existe
+    const usuario = await this.obtenerPorId(id);
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
+    }
+    
+    // Si se especifica un rol permitido, verificar que el usuario tenga ese rol
+    if (rolPermitido && usuario.rol !== rolPermitido) {
+      throw new Error(`Solo se pueden eliminar ${rolPermitido}s`);
+    }
+
+    // Eliminar el usuario
+    await query.run(
+      `DELETE FROM usuarios WHERE id = ?`,
+      [id]
     );
   }
 }

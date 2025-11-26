@@ -16,10 +16,25 @@ export class AuthService {
 
   // Registrar nuevo usuario
   static async registrar(datos: Usuario): Promise<{ usuario: any; token: string }> {
+    // Validar formato de email
+    if (!datos.email || !datos.email.includes('@') || !datos.email.includes('.')) {
+      throw new AppError('El formato del correo electrónico no es válido', 400);
+    }
+
+    // Validar longitud de contraseña
+    if (!datos.password || datos.password.length < 8) {
+      throw new AppError('La contraseña debe tener al menos 8 caracteres', 400);
+    }
+
+    // Validar campos requeridos
+    if (!datos.nombre || !datos.apellido) {
+      throw new AppError('El nombre y apellido son requeridos', 400);
+    }
+
     // Verificar si el email ya existe
     const usuarioExistente = await UsuarioModel.obtenerPorEmail(datos.email);
     if (usuarioExistente) {
-      throw new AppError('El email ya está registrado', 400);
+      throw new AppError('Este correo electrónico ya está registrado. Intenta iniciar sesión', 400);
     }
 
     // Crear usuario
@@ -42,21 +57,26 @@ export class AuthService {
 
   // Iniciar sesión
   static async login(email: string, password: string): Promise<{ usuario: any; token: string }> {
+    // Validar formato de email básico
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      throw new AppError('El formato del correo electrónico no es válido', 400);
+    }
+
     // Buscar usuario
     const usuario = await UsuarioModel.obtenerPorEmail(email);
     if (!usuario) {
-      throw new AppError('Credenciales inválidas', 401);
+      throw new AppError('El correo electrónico no está registrado', 401);
     }
 
     // Verificar contraseña
     const passwordValido = await UsuarioModel.verificarPassword(password, usuario.password);
     if (!passwordValido) {
-      throw new AppError('Credenciales inválidas', 401);
+      throw new AppError('La contraseña es incorrecta', 401);
     }
 
     // Verificar si está activo
     if (usuario.activo === 0) {
-      throw new AppError('Usuario inactivo', 403);
+      throw new AppError('Tu cuenta está inactiva. Contacta al administrador', 403);
     }
 
     // Actualizar último acceso

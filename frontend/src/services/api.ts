@@ -29,8 +29,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ApiResponse>) => {
-    if (error.response?.status === 401) {
-      // Token expirado o inválido
+    // Solo redirigir en caso de 401 si NO es un intento de login o registro
+    // (los endpoints de autenticación deben manejar sus propios errores)
+    const isAuthEndpoint = error.config?.url?.includes('/auth/login') || 
+                          error.config?.url?.includes('/auth/registro');
+    
+    if (error.response?.status === 401 && !isAuthEndpoint) {
+      // Token expirado o inválido - solo para usuarios ya autenticados
       localStorage.removeItem('token');
       localStorage.removeItem('usuario');
       window.location.href = '/login';

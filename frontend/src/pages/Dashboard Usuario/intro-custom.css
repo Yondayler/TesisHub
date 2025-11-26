@@ -1,0 +1,163 @@
+/* Estilos personalizados para intro.js - Diseño moderno y minimalista usando variables CSS del tema */
+
+/* Overlay más sutil */
+.introjs-overlay {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+/* Tooltip moderno usando variables del tema */
+.introjs-tooltip {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important;
+  padding: 24px !important;
+  max-width: 320px !important;
+  font-family: var(--font-sans) !important;
+}
+
+/* Texto del tooltip usando variables del tema */
+.introjs-tooltip-text {
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: var(--card-foreground) !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
+}
+
+/* Botones minimalistas usando variables del tema */
+.introjs-button {
+  background: var(--secondary) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--secondary-foreground) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  margin: 0 4px !important;
+}
+
+.introjs-button:hover {
+  background: var(--accent) !important;
+  color: var(--accent-foreground) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Botón siguiente destacado usando primary */
+.introjs-nextbutton {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: none !important;
+}
+
+.introjs-nextbutton:hover {
+  opacity: 0.9 !important;
+}
+
+/* Botón done destacado usando primary */
+.introjs-donebutton {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: none !important;
+}
+
+.introjs-donebutton:hover {
+  opacity: 0.9 !important;
+}
+
+/* Botón skip más sutil */
+.introjs-skipbutton {
+  background: transparent !important;
+  color: var(--muted-foreground) !important;
+  text-decoration: none !important;
+  border: none !important;
+}
+
+.introjs-skipbutton:hover {
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+}
+
+/* Área de botones */
+.introjs-tooltipbuttons {
+  text-align: right !important;
+  margin-top: 20px !important;
+  border-top: 1px solid var(--border) !important;
+  padding-top: 16px !important;
+}
+
+/* Flecha del tooltip usando color del card */
+.introjs-arrow {
+  border: none !important;
+}
+
+.introjs-arrow.top {
+  border-bottom-color: var(--card) !important;
+  filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.3)) !important;
+}
+
+.introjs-arrow.bottom {
+  border-top-color: var(--card) !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) !important;
+}
+
+.introjs-arrow.left {
+  border-right-color: var(--card) !important;
+  filter: drop-shadow(-2px 0 4px rgba(0, 0, 0, 0.3)) !important;
+}
+
+.introjs-arrow.right {
+  border-left-color: var(--card) !important;
+  filter: drop-shadow(2px 0 4px rgba(0, 0, 0, 0.3)) !important;
+}
+
+/* Highlight más sutil usando variables del tema */
+.introjs-helperLayer {
+  background: transparent !important;
+  border: 2px solid var(--primary) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 0 4px rgba(var(--primary-rgb, 59, 130, 246), 0.1) !important;
+}
+
+/* Ocultar elementos no deseados */
+.introjs-bullets,
+.introjs-progress,
+.introjs-helperNumberLayer {
+  display: none !important;
+}
+
+/* Animaciones suaves */
+.introjs-tooltip {
+  animation: fadeInUp 0.3s ease-out !important;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .introjs-tooltip {
+    max-width: 280px !important;
+    padding: 20px !important;
+  }
+  
+  .introjs-tooltip-text {
+    font-size: 13px !important;
+  }
+  
+  .introjs-button {
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+  }
+}

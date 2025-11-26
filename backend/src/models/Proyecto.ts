@@ -6,15 +6,19 @@ export class ProyectoModel {
   static async crear(proyecto: Proyecto): Promise<number> {
     const sql = `
       INSERT INTO proyectos (
-        titulo, descripcion, objetivo_general, objetivos_especificos,
-        justificacion, metodologia, resultados_esperados, presupuesto_estimado,
-        duracion_meses, estudiante_id, tutor_id, estado, version, observaciones
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        titulo, descripcion, planteamiento, solucion_problema, diagnosticos, antecedentes,
+        objetivo_general, objetivos_especificos, justificacion, metodologia, resultados_esperados, 
+        presupuesto_estimado, duracion_meses, estudiante_id, tutor_id, estado, version, observaciones
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     
     const result = await dbRun(sql, [
       proyecto.titulo,
       proyecto.descripcion,
+      proyecto.planteamiento || null,
+      proyecto.solucion_problema || null,
+      proyecto.diagnosticos || null,
+      proyecto.antecedentes || null,
       proyecto.objetivo_general || null,
       proyecto.objetivos_especificos || null,
       proyecto.justificacion || null,
@@ -109,6 +113,22 @@ export class ProyectoModel {
     if (proyecto.descripcion !== undefined) {
       campos.push('descripcion = ?');
       valores.push(proyecto.descripcion);
+    }
+    if (proyecto.planteamiento !== undefined) {
+      campos.push('planteamiento = ?');
+      valores.push(proyecto.planteamiento);
+    }
+    if (proyecto.solucion_problema !== undefined) {
+      campos.push('solucion_problema = ?');
+      valores.push(proyecto.solucion_problema);
+    }
+    if (proyecto.diagnosticos !== undefined) {
+      campos.push('diagnosticos = ?');
+      valores.push(proyecto.diagnosticos);
+    }
+    if (proyecto.antecedentes !== undefined) {
+      campos.push('antecedentes = ?');
+      valores.push(proyecto.antecedentes);
     }
     if (proyecto.objetivo_general !== undefined) {
       campos.push('objetivo_general = ?');
@@ -215,6 +235,93 @@ export class ProyectoModel {
     
     return await dbGet(sql, [estudianteId]);
   }
+
+  // Contar proyectos por tutor y estado
+  static async contarPorTutor(tutorId: number): Promise<any> {
+    const sql = `
+      SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN estado = 'borrador' THEN 1 ELSE 0 END) as borradores,
+        SUM(CASE WHEN estado = 'enviado' THEN 1 ELSE 0 END) as enviados,
+        SUM(CASE WHEN estado = 'en_revision' THEN 1 ELSE 0 END) as en_revision,
+        SUM(CASE WHEN estado = 'aprobado' THEN 1 ELSE 0 END) as aprobados,
+        SUM(CASE WHEN estado = 'rechazado' THEN 1 ELSE 0 END) as rechazados,
+        SUM(CASE WHEN estado = 'corregir' THEN 1 ELSE 0 END) as corregir
+      FROM proyectos
+      WHERE tutor_id = ?
+    `;
+    
+    return await dbGet(sql, [tutorId]);
+  }
+
+  // Contar todos los proyectos (para administradores)
+  static async contarTodos(): Promise<any> {
+    const sql = `
+      SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN estado = 'borrador' THEN 1 ELSE 0 END) as borradores,
+        SUM(CASE WHEN estado = 'enviado' THEN 1 ELSE 0 END) as enviados,
+        SUM(CASE WHEN estado = 'en_revision' THEN 1 ELSE 0 END) as en_revision,
+        SUM(CASE WHEN estado = 'aprobado' THEN 1 ELSE 0 END) as aprobados,
+        SUM(CASE WHEN estado = 'rechazado' THEN 1 ELSE 0 END) as rechazados,
+        SUM(CASE WHEN estado = 'corregir' THEN 1 ELSE 0 END) as corregir
+      FROM proyectos
+    `;
+    
+    return await dbGet(sql, []);
+  }
+
+  // Contar proyectos activos (enviados + en_revision)
+  static async contarActivos(): Promise<number> {
+    const sql = `
+      SELECT COUNT(*) as total
+      FROM proyectos
+      WHERE estado IN ('enviado', 'en_revision')
+    `;
+    
+    const result = await dbGet(sql, []);
+    return result?.total || 0;
+  }
+
+  // Calcular tasa de aprobación
+  static async calcularTasaAprobacion(): Promise<number> {
+    const sql = `
+      SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN estado = 'aprobado' THEN 1 ELSE 0 END) as aprobados
+      FROM proyectos
+      WHERE estado != 'borrador'
+    `;
+    
+    const result = await dbGet(sql, []);
+    if (!result || result.total === 0) return 0;
+    return ((result.aprobados || 0) / result.total) * 100;
+  }
+
+  // Obtener proyectos agrupados por fecha (últimos N días)
+  static async obtenerProyectosPorFecha(dias: number = 90): Promise<any[]> {
+    // Construir la fecha límite dinámicamente
+    const fechaLimite = new Date();
+    fechaLimite.setDate(fechaLimite.getDate() - dias);
+    const fechaLimiteStr = fechaLimite.toISOString().split('T')[0];
+    
+    const sql = `
+      SELECT 
+        DATE(fecha_creacion) as date,
+        COUNT(*) as total,
+        SUM(CASE WHEN estado = 'aprobado' THEN 1 ELSE 0 END) as aprobados,
+        SUM(CASE WHEN estado IN ('enviado', 'en_revision', 'corregir') THEN 1 ELSE 0 END) as en_proceso
+      FROM proyectos
+      WHERE DATE(fecha_creacion) >= DATE(?)
+      GROUP BY DATE(fecha_creacion)
+      ORDER BY date ASC
+    `;
+    
+    return await dbAll(sql, [fechaLimiteStr]);
+  }
 }
+
+
+
 
 

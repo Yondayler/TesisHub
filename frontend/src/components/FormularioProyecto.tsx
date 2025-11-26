@@ -95,7 +95,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="titulo" className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-gray-500" />
+              <FileText className="h-4 w-4 text-muted-foreground" />
               Título del Proyecto *
             </Label>
             <Input
@@ -109,12 +109,12 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
               disabled={loading}
               className="h-11"
             />
-            <p className="text-xs text-gray-500">Mínimo 5 caracteres</p>
+            <p className="text-xs text-muted-foreground">Mínimo 5 caracteres</p>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="descripcion" className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-gray-500" />
+              <FileText className="h-4 w-4 text-muted-foreground" />
               Descripción *
             </Label>
             <Textarea
@@ -128,7 +128,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
               rows={4}
               className="resize-none"
             />
-            <p className="text-xs text-gray-500">Mínimo 20 caracteres</p>
+            <p className="text-xs text-muted-foreground">Mínimo 20 caracteres</p>
           </div>
         </CardContent>
       </Card>
@@ -148,7 +148,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="objetivo_general" className="flex items-center gap-2">
-              <Target className="h-4 w-4 text-gray-500" />
+              <Target className="h-4 w-4 text-muted-foreground" />
               Objetivo General
             </Label>
             <Textarea
@@ -165,7 +165,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
 
           <div className="space-y-2">
             <Label htmlFor="objetivos_especificos" className="flex items-center gap-2">
-              <Target className="h-4 w-4 text-gray-500" />
+              <Target className="h-4 w-4 text-muted-foreground" />
               Objetivos Específicos
             </Label>
             <Textarea
@@ -197,7 +197,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="justificacion" className="flex items-center gap-2">
-              <Lightbulb className="h-4 w-4 text-gray-500" />
+              <Lightbulb className="h-4 w-4 text-muted-foreground" />
               Justificación
             </Label>
             <Textarea
@@ -214,7 +214,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
 
           <div className="space-y-2">
             <Label htmlFor="metodologia" className="flex items-center gap-2">
-              <Settings2 className="h-4 w-4 text-gray-500" />
+              <Settings2 className="h-4 w-4 text-muted-foreground" />
               Metodología
             </Label>
             <Textarea
@@ -246,7 +246,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="resultados_esperados" className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-gray-500" />
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
               Resultados Esperados
             </Label>
             <Textarea
@@ -264,7 +264,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="presupuesto_estimado" className="flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-gray-500" />
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
                 Presupuesto (Bs.)
               </Label>
               <Input
@@ -283,7 +283,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
 
             <div className="space-y-2">
               <Label htmlFor="duracion_meses" className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-500" />
+                <Calendar className="h-4 w-4 text-muted-foreground" />
                 Duración (meses)
               </Label>
               <Input
@@ -310,7 +310,7 @@ export const FormularioProyecto = ({ proyecto, onSubmit, onCancel }: FormularioP
             variant="outline"
             onClick={onCancel}
             disabled={loading}
-            className="hover:bg-gray-100 transition-all duration-200"
+            className="hover:bg-accent transition-all duration-200"
           >
             Cancelar
           </Button>

@@ -1,11 +1,14 @@
 import express, { Application } from 'express';
+import { createServer } from 'http';
 import cors from 'cors';
 import { config } from './config/env';
 import routes from './routes';
 import { errorHandler } from './middleware/errorHandler';
 import { initDatabase } from './config/initDatabase';
+import { initSocket } from './config/socket';
 
 const app: Application = express();
+const httpServer = createServer(app);
 
 // Middlewares
 app.use(cors());
@@ -14,6 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Inicializar base de datos
 initDatabase();
+
+// Inicializar Socket.io
+initSocket(httpServer);
 
 // Rutas
 app.use('/api', routes);
@@ -33,11 +39,17 @@ app.use(errorHandler);
 // Iniciar servidor
 const PORT = config.port;
 
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
   console.log(`📝 Entorno: ${config.nodeEnv}`);
+  console.log(`🔌 Socket.io habilitado`);
 });
 
 export default app;
+
+
+
+
+
 
 
