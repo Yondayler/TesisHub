@@ -26,7 +26,8 @@ export class ComentarioService {
 
     const comentarioId = await ComentarioModel.crear({
       ...comentarioData,
-      usuario_id: usuario.id
+      usuario_id: usuario.id,
+      editado: 0
     });
 
     const comentario = await ComentarioModel.obtenerPorId(comentarioId);

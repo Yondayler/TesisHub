@@ -201,7 +201,7 @@ export class ProyectoController {
       }
 
       // Obtener datos del proyecto antes para auditoría
-      const proyectoAnterior = await ProyectoService.obtenerPorId(proyectoId);
+      const proyectoAnterior = await ProyectoService.obtenerProyectoPorId(proyectoId, usuario);
       
       const proyecto = await ProyectoService.asignarTutor(proyectoId, tutor_id, usuario);
 
