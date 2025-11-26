@@ -19,5 +19,13 @@ export default defineConfig({
       },
     },
   },
+  preview: {
+    host: '0.0.0.0',
+    port: 10000,
+    allowedHosts: [
+      'tesis-hub-frontend.onrender.com',
+      '.onrender.com', // Permite cualquier subdominio de onrender.com
+    ],
+  },
 });
 
