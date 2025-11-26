@@ -17,12 +17,9 @@ services:
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: DB_PATH
-        value: ./backend/database/database.db
+        value: ./database/database.db
       - key: CORS_ORIGIN
-        fromService:
-          type: web
-          name: tesis-hub-frontend
-          property: host
+        value: "*"
 
   # Frontend
   - type: web
