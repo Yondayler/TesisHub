@@ -1,6 +1,7 @@
 @import "./globals.css";
 @import "./animations.css";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -8,7 +9,41 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+
+  /* Estilos para tablas limpias (Índice) en el editor */
+  .prose table.clean-table {
+    border: none !important;
+  }
+
+  .prose table.clean-table td,
+  .prose table.clean-table th {
+    border: none !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    vertical-align: bottom !important;
+  }
+
+  .prose table.clean-table tr {
+    border: none !important;
+  }
+
+  /* Indentación para índice */
+  .prose table.clean-table td.indent-1 {
+    padding-left: 20px !important;
+  }
+
+  .prose table.clean-table td.indent-2 {
+    padding-left: 40px !important;
+  }
+
+  .prose table.clean-table td.indent-3 {
+    padding-left: 60px !important;
   }
 }

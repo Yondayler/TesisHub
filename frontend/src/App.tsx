@@ -13,6 +13,7 @@ import { Documentacion } from './pages/Dashboard Usuario/Documentacion';
 import { EstudiantesTutorizados } from './pages/Dashboard Tutor/EstudiantesTutorizados';
 import { Settings as SettingsTutor } from './pages/Dashboard Tutor/Settings';
 import { DashboardRedirect } from './components/DashboardRedirect';
+import Canvas from './pages/Canvas/Canvas';
 
 // Componente para redirigir si ya está autenticado
 const PublicRoute = ({ children, allowRedirect = true }: { children: React.ReactNode; allowRedirect?: boolean }) => {
@@ -115,6 +116,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute requiredRole="administrador">
             <DashboardAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/canvas"
+        element={
+          <ProtectedRoute requiredRole="estudiante">
+            <Canvas />
           </ProtectedRoute>
         }
       />

@@ -16,6 +16,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import { ChatAssistant } from "@/components/ChatAssistant/ChatAssistant"
 import introJs from "intro.js"
 import "intro.js/introjs.css"
 import "./intro-custom.css"
@@ -332,6 +333,9 @@ export function Dashboard() {
         onSubmit={modoDrawer === 'editar' ? handleActualizarProyecto : handleCrearProyecto}
         mode={modoDrawer}
       />
+      
+      {/* Asistente de Chat con IA */}
+      <ChatAssistant proyectoId={proyectoSeleccionado?.id} />
     </SidebarProvider>
   )
 }

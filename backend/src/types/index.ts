@@ -161,6 +161,35 @@ export interface Auditoria {
   administrador_email?: string;
 }
 
+// Tipos para Tesis Referencias
+export interface TesisReferencia {
+  id?: number;
+  titulo: string;
+  autor: string;
+  año: number;
+  universidad?: string;
+  carrera?: string;
+  area_conocimiento?: string;
+  resumen: string;
+  metodologia?: string;
+  palabras_clave?: string;
+  contenido_completo?: string;
+  archivo_pdf?: string;
+  estado?: 'disponible' | 'restringido';
+  fecha_ingreso?: string;
+  metadata?: string; // JSON string
+}
+
+// Tipos para Tesis Embeddings (para RAG)
+export interface TesisEmbedding {
+  id?: number;
+  tesis_id: number;
+  chunk_index: number;
+  chunk_text: string;
+  embedding?: Buffer | null;
+  metadata?: string; // JSON string
+}
+
 // Tipos para JWT
 export interface JwtPayload {
   id: number;

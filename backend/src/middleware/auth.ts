@@ -10,14 +10,23 @@ export const authenticate = (
   next: NextFunction
 ): void => {
   try {
-    const authHeader = req.headers.authorization;
+    let token: string | undefined;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Intentar obtener token del header Authorization
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    }
+
+    // Si no hay token en header, intentar obtenerlo de query params (para SSE)
+    if (!token && req.query.token) {
+      token = req.query.token as string;
+    }
+
+    if (!token) {
       sendError(res, 'Token de autenticación no proporcionado', 401);
       return;
     }
-
-    const token = authHeader.substring(7); // Remover "Bearer "
 
     const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload;
 
@@ -51,6 +60,7 @@ export const authorize = (...roles: string[]) => {
     next();
   };
 };
+
 
 
 

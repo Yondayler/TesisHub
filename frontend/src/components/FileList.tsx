@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
@@ -40,7 +39,7 @@ export function FileList({ proyectoId, onArchivoEliminado, refreshTrigger }: Fil
 
   const handleDescargar = async (archivo: ArchivoProyecto) => {
     try {
-      await archivoService.descargarArchivo(archivo.id!, archivo.nombre_original)
+      await archivoService.descargarArchivo(archivo.id!)
       toast.success("Descarga iniciada")
     } catch (error: any) {
       console.error("Error al descargar archivo:", error)

@@ -59,6 +59,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -70,6 +71,7 @@
     opacity: 0;
     transform: translateX(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -81,6 +83,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -91,6 +94,7 @@
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -166,6 +170,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -177,6 +182,7 @@
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -188,6 +194,7 @@
     opacity: 0;
     transform: translateX(30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -199,9 +206,11 @@
     opacity: 0 !important;
     transform: scale(0.96) !important;
   }
+
   1% {
     opacity: 1 !important;
   }
+
   100% {
     opacity: 1 !important;
     transform: scale(1) !important;
@@ -209,9 +218,12 @@
 }
 
 @keyframes authLogoFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-8px);
   }
@@ -375,6 +387,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 0;
     transform: translateY(-8px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -386,6 +399,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
   to {
     opacity: 0;
     transform: translateY(-8px) scale(0.95);
@@ -406,6 +420,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 1;
     transform: scale(1) !important;
   }
+
   to {
     opacity: 0;
     transform: scale(0.96) !important;
@@ -422,6 +437,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -431,6 +447,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
@@ -449,6 +466,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 0;
     transform: scale(0.96) translate(-50%, -50%) !important;
   }
+
   to {
     opacity: 1;
     transform: scale(1) translate(-50%, -50%) !important;
@@ -460,6 +478,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 1;
     transform: scale(1) translate(-50%, -50%) !important;
   }
+
   to {
     opacity: 0;
     transform: scale(0.96) translate(-50%, -50%) !important;
@@ -482,6 +501,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 0;
     transform: translate(-50%, calc(-50% - 8px)) scale(0.98) !important;
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1) !important;
@@ -493,6 +513,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1) !important;
   }
+
   to {
     opacity: 0;
     transform: translate(-50%, calc(-50% + 4px)) scale(0.99) !important;
@@ -511,10 +532,14 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
 
 /* Animación de "escribiendo..." con 3 puntitos */
 @keyframes typing-dots {
-  0%, 60%, 100% {
+
+  0%,
+  60%,
+  100% {
     transform: translateY(0);
     opacity: 0.7;
   }
+
   30% {
     transform: translateY(-10px);
     opacity: 1;
@@ -527,6 +552,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 0;
     transform: translateY(10px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -539,6 +565,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
   to {
     opacity: 0;
     transform: translateY(-10px) scale(0.95);
@@ -592,6 +619,7 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     opacity: 0;
     transform: translateY(20px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -604,9 +632,11 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
     transform: scale(0.95);
     opacity: 0;
   }
+
   50% {
     transform: scale(1.02);
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -622,3 +652,52 @@ html.dark .proyecto-form-back-button.proyecto-form-step-greater-than-1:active {
   animation: none;
 }
 
+/* Animación de arcoíris para el input del chat - Espectro completo */
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-rainbow {
+  animation: rainbow 3s linear infinite;
+}
+
+/* Animaciones para Canvas de Tesis - Inicio inmersivo */
+@keyframes floatParticle {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-100vh) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-float-particle {
+  animation: floatParticle 2s ease-out forwards;
+}
+
+.animate-spin-slow {
+  animation: spinSlow 3s linear infinite;
+}

@@ -14,3 +14,4 @@ router.get('/entidad/:entidad', AuditoriaController.obtenerPorEntidad);
 
 export default router;
 
+

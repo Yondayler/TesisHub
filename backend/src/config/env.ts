@@ -14,7 +14,14 @@ export const config = {
         ? process.env.CORS_ORIGIN 
         : `https://${process.env.CORS_ORIGIN}`)
     : '*',
+  // Gemini AI Configuration
+  geminiApiKey: process.env.GEMINI_API_KEY || '',
 };
+
+// Asegurar que Mastra tenga la API Key correcta disponible
+if (config.geminiApiKey) {
+  process.env.GOOGLE_GENERATIVE_AI_API_KEY = config.geminiApiKey;
+}
 
 
 

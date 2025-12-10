@@ -2,6 +2,12 @@ import express, { Application } from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
 import { config } from './config/env';
+
+// Configurar variable de entorno para Mastra (Google Provider)
+if (config.geminiApiKey) {
+  process.env.GOOGLE_GENERATIVE_AI_API_KEY = config.geminiApiKey;
+}
+
 import routes from './routes';
 import { errorHandler } from './middleware/errorHandler';
 import { initDatabase } from './config/initDatabase';
@@ -15,8 +21,8 @@ app.use(cors({
   origin: config.corsOrigin === '*' ? true : config.corsOrigin,
   credentials: true,
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' })); // Aumentado para soportar tesis grandes
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Inicializar base de datos
 initDatabase();

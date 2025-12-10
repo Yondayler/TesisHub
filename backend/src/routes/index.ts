@@ -7,6 +7,9 @@ import archivoRoutes from './archivos';
 import comentarioRoutes from './comentarios';
 import tutorRoutes from './tutores';
 import auditoriaRoutes from './auditoria';
+import chatRoutes from './chat';
+import canvasRoutes from './canvas';
+import tesisCanvasRoutes from './tesisCanvas';
 
 const router = Router();
 
@@ -18,6 +21,9 @@ router.use('/notificaciones', notificacionRoutes);
 router.use('/comentarios', comentarioRoutes);
 router.use('/tutores', tutorRoutes);
 router.use('/auditoria', auditoriaRoutes);
+router.use('/chat', chatRoutes);
+router.use('/canvas', canvasRoutes);
+router.use('/tesis-canvas', tesisCanvasRoutes);
 router.use('/', archivoRoutes);
 
 // Ruta de prueba

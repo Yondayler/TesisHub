@@ -3,15 +3,19 @@ import fs from 'fs';
 import path from 'path';
 import bcrypt from 'bcryptjs';
 import { UsuarioModel } from '../models/Usuario';
+import { TesisCanvasModel } from '../models/TesisCanvas';
 
 export const initDatabase = async (): Promise<void> => {
   try {
     // Crear todas las tablas
     await crearTablas();
-    
+
+    // Inicializar tabla de tesis canvas
+    await TesisCanvasModel.inicializar();
+
     // Crear administrador inicial si no existe
     await crearAdministradorInicial();
-    
+
     console.log('✅ Base de datos inicializada correctamente');
   } catch (error) {
     console.error('❌ Error al inicializar la base de datos:', error);
@@ -194,6 +198,54 @@ const crearTablas = async (): Promise<void> => {
     )
   `);
 
+  // Tabla tesis_referencias - Base de datos de tesis para el agente de IA
+  await query.run(`
+    CREATE TABLE IF NOT EXISTS tesis_referencias (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      titulo TEXT NOT NULL,
+      autor TEXT NOT NULL,
+      año INTEGER NOT NULL,
+      universidad TEXT,
+      carrera TEXT,
+      area_conocimiento TEXT,
+      resumen TEXT NOT NULL,
+      metodologia TEXT,
+      palabras_clave TEXT,
+      contenido_completo TEXT,
+      archivo_pdf TEXT,
+      estado TEXT DEFAULT 'disponible',
+      fecha_ingreso DATETIME DEFAULT CURRENT_TIMESTAMP,
+      metadata TEXT
+    )
+  `);
+
+  // Tabla tesis_embeddings - Para almacenar embeddings vectoriales (RAG)
+  await query.run(`
+    CREATE TABLE IF NOT EXISTS tesis_embeddings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      tesis_id INTEGER NOT NULL,
+      chunk_index INTEGER NOT NULL,
+      chunk_text TEXT NOT NULL,
+      embedding BLOB,
+      metadata TEXT,
+      FOREIGN KEY (tesis_id) REFERENCES tesis_referencias(id) ON DELETE CASCADE
+    )
+  `);
+
+  // Tabla mensajes_chat - Historial de conversaciones
+  await query.run(`
+    CREATE TABLE IF NOT EXISTS mensajes_chat (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      usuario_id INTEGER NOT NULL,
+      proyecto_id INTEGER,
+      contenido TEXT NOT NULL,
+      rol TEXT NOT NULL,
+      fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+      FOREIGN KEY (proyecto_id) REFERENCES proyectos(id) ON DELETE CASCADE
+    )
+  `);
+
   // Crear índices
   await crearIndices();
 };
@@ -248,6 +300,21 @@ const crearIndices = async (): Promise<void> => {
   await query.run(`CREATE INDEX IF NOT EXISTS idx_auditoria_fecha ON auditoria(fecha_accion)`);
   await query.run(`CREATE INDEX IF NOT EXISTS idx_auditoria_accion ON auditoria(accion)`);
 
+  // Índices para tesis_referencias
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_tesis_carrera ON tesis_referencias(carrera)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_tesis_area ON tesis_referencias(area_conocimiento)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_tesis_año ON tesis_referencias(año)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_tesis_estado ON tesis_referencias(estado)`);
+
+  // Índices para tesis_embeddings
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_embeddings_tesis ON tesis_embeddings(tesis_id)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_embeddings_chunk ON tesis_embeddings(tesis_id, chunk_index)`);
+
+  // Índices para mensajes_chat
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_mensajes_usuario ON mensajes_chat(usuario_id)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_mensajes_proyecto ON mensajes_chat(proyecto_id)`);
+  await query.run(`CREATE INDEX IF NOT EXISTS idx_mensajes_fecha ON mensajes_chat(fecha_creacion)`);
+
   // Migración: Agregar nuevos campos a proyectos si no existen
   try {
     const tableInfo = await query.all('PRAGMA table_info(proyectos)') as Array<{ name: string }>;
@@ -300,7 +367,7 @@ const crearAdministradorInicial = async (): Promise<void> => {
 
     // Verificar si ya existe un administrador con este email
     const adminExistente = await UsuarioModel.obtenerPorEmail(ADMIN_EMAIL);
-    
+
     if (adminExistente) {
       if (adminExistente.rol === 'administrador') {
         console.log('✅ Administrador inicial ya existe (email: ' + ADMIN_EMAIL + ')');
@@ -315,7 +382,7 @@ const crearAdministradorInicial = async (): Promise<void> => {
     // Verificar si existe algún administrador en el sistema
     const todosUsuarios = await UsuarioModel.listar();
     const administradores = todosUsuarios.filter(u => u.rol === 'administrador');
-    
+
     if (administradores.length > 0) {
       console.log(`✅ Ya existen ${administradores.length} administrador(es) en el sistema`);
       return;
@@ -324,7 +391,7 @@ const crearAdministradorInicial = async (): Promise<void> => {
     // No hay administradores, crear el inicial
     console.log('📝 Creando administrador inicial...');
     const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
-    
+
     const result = await query.run(
       `INSERT INTO usuarios (email, password, nombre, apellido, rol, activo)
        VALUES (?, ?, ?, ?, ?, ?)`,
@@ -348,9 +415,9 @@ const crearAdministradorInicial = async (): Promise<void> => {
     }
   } catch (error: any) {
     // Si el error es por email duplicado, significa que ya existe (race condition)
-    if (error.message?.includes('UNIQUE constraint') || 
-        error.message?.includes('email') || 
-        error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+    if (error.message?.includes('UNIQUE constraint') ||
+      error.message?.includes('email') ||
+      error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
       console.log('✅ Administrador inicial ya existe (verificado por constraint de base de datos)');
       return;
     }

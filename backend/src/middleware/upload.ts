@@ -13,13 +13,18 @@ if (!fs.existsSync(uploadsDir)) {
 const storage = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, cb) => {
     const proyectoId = req.params.proyectoId || req.body.proyecto_id;
-    const proyectoDir = path.join(uploadsDir, `proyecto-${proyectoId}`);
-    
-    if (!fs.existsSync(proyectoDir)) {
-      fs.mkdirSync(proyectoDir, { recursive: true });
+
+    // Si hay proyectoId, guardar en carpeta del proyecto
+    // Si no hay proyectoId (chat), guardar en carpeta general de chat
+    const targetDir = proyectoId
+      ? path.join(uploadsDir, `proyecto-${proyectoId}`)
+      : path.join(uploadsDir, 'chat-uploads');
+
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
     }
-    
-    cb(null, proyectoDir);
+
+    cb(null, targetDir);
   },
   filename: (req: Request, file: Express.Multer.File, cb) => {
     // Generar nombre único: timestamp-nombreOriginal
@@ -73,6 +78,7 @@ export function getTipoArchivo(mimetype: string): 'documento' | 'imagen' | 'pres
   }
   return 'otro';
 }
+
 
 
 
